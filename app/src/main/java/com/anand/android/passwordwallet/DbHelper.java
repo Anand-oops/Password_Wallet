@@ -12,12 +12,6 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "store";
 
     private static final String TABLE_USER = "user";
-    private static final String TABLE_WEBSITES = "websites";
-
-    private static final String WEBSITES_FIELD_ID = "id";
-    private static final String WEBSITES_FIELD_URL = "url";
-    private static final String WEBSITES_FIELD_USER = "username";
-    private static final String WEBSITES_FIELD_PASSWORD = "password";
 
     private Context context;
 
@@ -29,10 +23,6 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE "+ TABLE_USER +"(email text primary key, password text)");
-        //String CREATE_TABLE_WEBSITES = "CREATE TABLE " + TABLE_WEBSITES + "("+ WEBSITES_FIELD_ID +" INTEGER PRIMARY KEY, "+
-                //WEBSITES_FIELD_URL + " TEXT, "+ WEBSITES_FIELD_USER + " TEXT, "+ WEBSITES_FIELD_PASSWORD + " TEXT);";
-        //sqLiteDatabase.execSQL(CREATE_TABLE_WEBSITES);
-        //L.Log("Table Created");
     }
 
     @Override

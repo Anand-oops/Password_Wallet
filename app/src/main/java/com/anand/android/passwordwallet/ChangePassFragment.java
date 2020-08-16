@@ -16,4 +16,8 @@ public class ChangePassFragment extends Fragment {
         return inflater.inflate(R.layout.activity_changepass,container,false);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+    }
 }
