@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/search_button"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always"
+        android:title="SearchButton" />
+    <item
+        android:id="@+id/sync_button"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_sync"
+        app:showAsAction="always"
+        android:title="SyncButton" />
+    <item
+        android:id="@+id/search"
+        android:orderInCategory="100"
+        android:title="Search"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sync"
+        android:orderInCategory="100"
+        android:title="Sync"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/del_data"
+        android:orderInCategory="100"
+        android:title="Delete Database"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/how_to_use"
+        android:orderInCategory="100"
+        android:title="How to Use App"
+        app:showAsAction="never" />
+</menu>
