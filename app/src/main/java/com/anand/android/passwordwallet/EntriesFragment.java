@@ -1,5 +1,6 @@
 package com.anand.android.passwordwallet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,8 @@ public class EntriesFragment extends Fragment {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                Intent intent= new Intent(getActivity(),EntryInput.class);
+                startActivity(intent);
             }
         });
     }
