@@ -1,32 +1,31 @@
 package com.anand.android.passwordwallet;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 public class DashboardActivity extends AppCompatActivity  {
 
-    private static final String TAG ="DashboardActivity" ;
     private DrawerLayout drawerLayout;
+    private String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class DashboardActivity extends AppCompatActivity  {
 
         Intent intent= getIntent();
         String userName=intent.getStringExtra("user");
-        String userEmail=intent.getStringExtra("email");
+        userEmail = intent.getStringExtra("email");
         String dpLink=intent.getStringExtra("dp");
         Uri displayPicture=Uri.parse(dpLink);
 
@@ -66,14 +65,38 @@ public class DashboardActivity extends AppCompatActivity  {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_dashboard:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,new EntriesFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new EntriesFragment()).commit();
+
                         break;
                     case R.id.nav_changepass:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,new ChangePassFragment()).commit();
+                        Fragment fragment = new ChangePassFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("email", userEmail);
+                        fragment.setArguments(bundle);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment).commit();
                         break;
                     case R.id.nav_logout:
-                        Toast.makeText(DashboardActivity.this, "Logout", Toast.LENGTH_SHORT).show();
-                        //finishActivity(0);
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
+                        dialog.setMessage("You will exit the app.... ");
+                        dialog.setTitle("Caution !");
+                        dialog.setIcon(R.drawable.ic_logout);
+                        dialog.setPositiveButton("EXIT",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        finish();
+                                    }
+                                });
+                        dialog.setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                });
+                        AlertDialog alertDialog = dialog.create();
+                        alertDialog.setCancelable(false);
+                        alertDialog.show();
                         break;
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -93,7 +116,30 @@ public class DashboardActivity extends AppCompatActivity  {
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START))
             drawerLayout.closeDrawer(GravityCompat.START);
-        else
-            super.onBackPressed();
+        else {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
+            dialog.setMessage("You will be redirected to Login Page.... ");
+            dialog.setTitle("Caution !");
+            dialog.setIcon(R.drawable.ic_logout);
+            dialog.setPositiveButton("EXIT",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            Intent intent = new Intent(DashboardActivity.this, UserLoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+            dialog.setNegativeButton("Cancel",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+            AlertDialog alertDialog = dialog.create();
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+        }
     }
 }

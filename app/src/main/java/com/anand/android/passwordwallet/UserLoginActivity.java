@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -32,9 +31,10 @@ import java.util.Objects;
 
 public class UserLoginActivity extends AppCompatActivity {
 
-    private static final String TAG = "Main2";
+    Toast backToast;
+    DbHelper db = new DbHelper(this);
     GoogleSignInClient mGoogleSignInClient;
-    DbHelper db;
+    private long backPressedTime;
     String userEmail;
     EditText pEntry;
     Uri displayPicture;
@@ -48,7 +48,6 @@ public class UserLoginActivity extends AppCompatActivity {
 
         Button changeUser = findViewById(R.id.change_user);
         checkBox = findViewById(R.id.checkBox);
-        db = new DbHelper(this);
         TextView nameTV = findViewById(R.id.name);
         pEntry = findViewById(R.id.password);
         Button loginButton = findViewById(R.id.login);
@@ -73,7 +72,7 @@ public class UserLoginActivity extends AppCompatActivity {
             nameTV.setText("Name: " + userName);
             emailTV.setText("Email: " + userEmail);
             Glide.with(this).load(displayPicture).into(photoIV);
-            if (db.chkemail(userEmail)) {
+            if (db.checkEmail(userEmail)) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(UserLoginActivity.this);
                 dialog.setMessage("No Password-Wallet  found associated with this email-id ");
                 dialog.setTitle("Login Failed !!");
@@ -117,7 +116,7 @@ public class UserLoginActivity extends AppCompatActivity {
                 if (password.length() == 0)
                     Toast.makeText(getApplicationContext(), "Field is empty", Toast.LENGTH_SHORT).show();
                 else {
-                    if (db.chkemail(userEmail)) {
+                    if (db.checkEmail(userEmail)) {
                         boolean insert = db.insert(userEmail, password);
                         if (insert) {
                             Toast.makeText(getApplicationContext(), "Registered Successfully", Toast.LENGTH_SHORT).show();
@@ -172,7 +171,14 @@ public class UserLoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        System.exit(0);
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            backToast.cancel();
+            System.exit(0);
+            super.onBackPressed();
+        } else {
+            backToast = Toast.makeText(getBaseContext(), "Press again to Exit", Toast.LENGTH_SHORT);
+            backToast.show();
+        }
+        backPressedTime = System.currentTimeMillis();
     }
 }

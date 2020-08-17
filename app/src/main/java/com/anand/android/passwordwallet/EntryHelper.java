@@ -5,10 +5,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import com.google.android.material.snackbar.Snackbar;
 
 public class EntryHelper extends SQLiteOpenHelper {
 
@@ -39,15 +35,16 @@ public class EntryHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("drop table if exists TABLE_ENTRIES");
     }
 
-    public void insert(String name, String userid, String password){
+    public boolean insert(String name, String userId, String password) {
 
-        SQLiteDatabase db =this. getWritableDatabase();
-        ContentValues contentValues= new ContentValues();
-        contentValues.put(ENTRIES_NAME,name);
-        contentValues.put(ENTRIES_USER,userid);
-        contentValues.put(ENTRIES_PASSWORD,password);
-        long ins=db.insert(TABLE_ENTRIES,null,contentValues);
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ENTRIES_NAME, name);
+        contentValues.put(ENTRIES_USER, userId);
+        contentValues.put(ENTRIES_PASSWORD, password);
+        long ins = db.insert(TABLE_ENTRIES, null, contentValues);
         db.close();
         Log.d(TAG, "insert: Value inserted");
+        return ins != -1;
     }
 }

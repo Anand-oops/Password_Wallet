@@ -1,5 +1,6 @@
 package com.anand.android.passwordwallet;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,11 +14,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_USER = "user";
 
-    private Context context;
-
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
     }
 
     @Override
@@ -28,6 +26,7 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("drop table if exists TABLE_USER");
+        onCreate(sqLiteDatabase);
     }
 
     public boolean insert(String email, String pass) {
@@ -37,21 +36,24 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put("password",pass);
         long ins=db.insert(TABLE_USER,null,contentValues);
         db.close();
-        if (ins==-1) return false;
-        else return true;
+        return ins != -1;
     }
 
-    public Boolean chkemail(String email){
+    public boolean checkEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor= db.rawQuery("SELECT * from "+TABLE_USER+" where email=?" ,new String[]{email});
-        if (cursor.getCount()>0) return false;
-        else return true;
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery("SELECT * from " + TABLE_USER + " where email=?", new String[]{email});
+        return cursor.getCount() <= 0;
     }
 
-    public Boolean checked(String email, String pass) {
+    public boolean checked(String email, String pass) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor= db.rawQuery("SELECT * from "+TABLE_USER+" where email=? and password=?" ,new String[]{email,pass});
-        if (cursor.getCount()>0) return true;
-        else return false;
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery("SELECT * from " + TABLE_USER + " where email=? and password=?", new String[]{email, pass});
+        return cursor.getCount() > 0;
+    }
+
+    public boolean update(String email, String NewPassword) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("UPDATE " + TABLE_USER + " SET password=? WHERE email=?", new String[]{NewPassword, email});
+        return true;
     }
 }

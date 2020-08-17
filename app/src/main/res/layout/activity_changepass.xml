@@ -11,24 +11,30 @@
         android:id="@+id/currentPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
-        android:hint="NAME"
+        android:hint="Current Password"
         android:layout_margin="20dp"
         />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="USER ID"
+        android:hint="New Password"
         android:layout_margin="20dp"
-        android:id="@+id/newPassword"
-        />
+        android:id="@+id/newPassword" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="PASSWORD"
+        android:hint="Confirm Password"
         android:inputType="textPassword"
         android:layout_margin="20dp"
-        android:id="@+id/confirmPassword"
-        />
+        android:id="@+id/confirmPassword" />
+
+    <Button
+        android:id="@+id/proceedToPassChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:text="Proceed" />
 
 </LinearLayout>
