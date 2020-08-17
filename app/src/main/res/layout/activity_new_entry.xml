@@ -12,20 +12,27 @@
         android:layout_height="wrap_content"
         android:text=""
         android:hint="NAME"
+
         android:layout_margin="20dp" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="USER ID"
         android:layout_margin="20dp"
-        android:id="@+id/userid"
-        />
+        android:id="@+id/userid" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="PASSWORD"
         android:layout_margin="20dp"
-        android:id="@+id/password"
-        />
+        android:id="@+id/password" />
 
+    <EditText
+        android:id="@+id/note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:hint="NOTE" />
 </LinearLayout>

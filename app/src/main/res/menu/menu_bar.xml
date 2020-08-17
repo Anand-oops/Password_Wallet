@@ -7,17 +7,7 @@
         android:icon="@drawable/ic_search"
         app:showAsAction="always"
         android:title="SearchButton" />
-    <item
-        android:id="@+id/sync_button"
-        android:orderInCategory="100"
-        android:icon="@drawable/ic_sync"
-        app:showAsAction="always"
-        android:title="SyncButton" />
-    <item
-        android:id="@+id/search"
-        android:orderInCategory="100"
-        android:title="Search"
-        app:showAsAction="never" />
+
     <item
         android:id="@+id/sync"
         android:orderInCategory="100"

@@ -30,6 +30,9 @@
         <activity
             android:name=".EntryInput"
             android:label="Enter Credentials" />
+        <activity
+            android:name=".ChangePassActivity"
+            android:label="Change Master Password" />
     </application>
 
 </manifest>
