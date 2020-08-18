@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_bright">
+    android:layout_height="match_parent">
 
-    <ListView
+    <TextView
+        android:id="@+id/NoDataTV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No Entry to display..."
+        android:textAlignment="center"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_margin="12dp"
         android:id="@+id/entriesList"
         android:layout_height="wrap_content"
+        android:scrollbarThumbVertical="@android:color/holo_red_dark"
+        android:scrollbars="vertical"
+        android:verticalScrollbarPosition="defaultPosition"
         android:layout_width="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -15,7 +27,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add"
         android:clickable="true"
-        android:background="@android:color/white"
+        android:background="@android:color/holo_red_light"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="40dp"

@@ -74,8 +74,9 @@ public class UserLoginActivity extends AppCompatActivity {
             Glide.with(this).load(displayPicture).into(photoIV);
             if (db.checkEmail(userEmail)) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(UserLoginActivity.this);
-                dialog.setMessage("No Password-Wallet  found associated with this email-id ");
-                dialog.setTitle("Login Failed !!");
+                dialog.setMessage("No Password-Wallet found associated with this email-id... ");
+                loginButton.setText("REGISTER");
+                dialog.setTitle("Wait!!");
                 dialog.setIcon(android.R.drawable.ic_dialog_info);
                 dialog.setPositiveButton("Register",
                         new DialogInterface.OnClickListener() {

@@ -113,9 +113,6 @@ public class DashboardActivity extends AppCompatActivity  {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_bar, menu);
-
-        //MenuItem searchItem=menu.findItem(R.id.search_button);
-        //SearchView searchView= MenuItemCompat.getActionProvider(searchItem);
         return true;
     }
 

@@ -3,23 +3,21 @@ package com.anand.android.passwordwallet;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -30,8 +28,8 @@ public class EntriesFragment extends Fragment {
     private static final String TAG = "EntriesFragment";
     EntryHelper entryHelper;
     ArrayList<String> list;
-    ArrayAdapter<String> adapter;
-    ListView userEntries;
+    EntryAdapter adapter;
+    RecyclerView userEntries;
 
     @Nullable
     @Override
@@ -65,7 +63,7 @@ public class EntriesFragment extends Fragment {
                         filteredList.add(entry);
                     }
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, filteredList);
+                EntryAdapter adapter = new EntryAdapter(getActivity(), filteredList);
                 userEntries.setAdapter(adapter);
                 return true;
             }
@@ -77,14 +75,6 @@ public class EntriesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         list = new ArrayList<>();
-
-        userEntries.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String text = userEntries.getItemAtPosition(i).toString();
-                Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-            }
-        });
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,16 +88,21 @@ public class EntriesFragment extends Fragment {
     public void viewData() {
         Cursor cursor = entryHelper.ViewData();
 
-        if (cursor.getCount() == 0)
-            Toast.makeText(getContext(), "No data to show", Toast.LENGTH_SHORT).show();
-        else {
+        if (cursor.getCount() == 0) {
+            TextView tv = requireActivity().findViewById(R.id.NoDataTV);
+            tv.setVisibility(View.VISIBLE);
+        } else {
+            TextView tv = requireActivity().findViewById(R.id.NoDataTV);
+            if (tv.getVisibility() == View.VISIBLE)
+                tv.setVisibility(View.GONE);
             list.clear();
             while (cursor.moveToNext()) {
                 list.add(cursor.getString(1));
             }
-            adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, list);
-            Log.i(TAG, "viewData: " + list);
+            adapter = new EntryAdapter(getActivity(), list);
+            userEntries.setHasFixedSize(true);
             userEntries.setAdapter(adapter);
+            userEntries.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
     }
 

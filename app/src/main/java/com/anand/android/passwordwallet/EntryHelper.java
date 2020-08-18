@@ -57,7 +57,7 @@ public class EntryHelper extends SQLiteOpenHelper {
         String query = "SELECT * from " + TABLE_ENTRIES;
         Cursor cursor = db.rawQuery(query, null);
         if (cursor != null) {
-            cursor.moveToFirst();
+            //cursor.moveToFirst();
             return cursor;
         } else
             return null;
