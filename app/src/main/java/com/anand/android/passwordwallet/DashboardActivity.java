@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
@@ -68,9 +69,11 @@ public class DashboardActivity extends AppCompatActivity  {
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new EntriesFragment()).commit();
                         break;
                     case R.id.nav_changepass:
-                        Intent intent = new Intent(DashboardActivity.this, ChangePassActivity.class);
-                        intent.putExtra("email", userEmail);
-                        startActivity(intent);
+                        Fragment fragment = new ChangePassFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("email", userEmail);
+                        fragment.setArguments(bundle);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment).commit();
                         break;
                     case R.id.nav_sync:
                         Toast.makeText(getApplicationContext(), "Sync with Cloud", Toast.LENGTH_SHORT).show();
@@ -110,6 +113,9 @@ public class DashboardActivity extends AppCompatActivity  {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_bar, menu);
+
+        //MenuItem searchItem=menu.findItem(R.id.search_button);
+        //SearchView searchView= MenuItemCompat.getActionProvider(searchItem);
         return true;
     }
 

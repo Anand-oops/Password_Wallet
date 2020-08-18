@@ -66,6 +66,7 @@ public class EntryInput extends AppCompatActivity {
                     password.getText().toString().trim(), note.getText().toString().trim())) {
                 Snackbar.make(getWindow().getDecorView(), "Data Added...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                finish();
             }
         }
     }

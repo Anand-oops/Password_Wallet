@@ -10,16 +10,13 @@
             android:id="@+id/nav_dashboard"
             android:icon="@drawable/ic_dashboard"
             android:title="Dashboard" />
-    </group>
-
-    <group android:id="@+id/group2">
         <item
             android:id="@+id/nav_changepass"
             android:icon="@drawable/ic_wallet"
             android:title="Change Wallet Password" />
     </group>
 
-    <group android:id="@+id/group4">
+    <group android:id="@+id/group2">
         <item
             android:id="@+id/nav_sync"
             android:icon="@drawable/ic_upload"

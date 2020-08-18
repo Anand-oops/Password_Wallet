@@ -2,13 +2,14 @@ package com.anand.android.passwordwallet;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class EntryHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "SyncToDrive" ;
+    private static final String DATABASE_NAME = "SyncToDrive.db";
     private static final int DATABASE_VERSION = 2;
     private static final String TABLE_ENTRIES = "entries";
     private static final String ENTRIES_ID = "id";
@@ -23,9 +24,10 @@ public class EntryHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_TABLE_WEBSITES = "CREATE TABLE " + TABLE_ENTRIES + "(" + ENTRIES_ID + " INTEGER PRIMARY KEY, " +
+        String CREATE_TABLE_WEBSITES = "CREATE TABLE " + TABLE_ENTRIES + "(" + ENTRIES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ENTRIES_NAME + " TEXT , " + ENTRIES_USER + " TEXT, " + ENTRIES_PASSWORD + " TEXT, " + ENTRIES_NOTE + " TEXT)";
         sqLiteDatabase.execSQL(CREATE_TABLE_WEBSITES);
         Log.i(TAG, "onCreate: TABLE CREATED");
@@ -34,6 +36,7 @@ public class EntryHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("drop table if exists TABLE_ENTRIES");
+        onCreate(sqLiteDatabase);
     }
 
     public boolean insert(String name, String userId, String password, String note) {
@@ -47,5 +50,16 @@ public class EntryHelper extends SQLiteOpenHelper {
         db.close();
         Log.d(TAG, "insert: Value inserted");
         return ins != -1;
+    }
+
+    public Cursor ViewData() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * from " + TABLE_ENTRIES;
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            return cursor;
+        } else
+            return null;
     }
 }
