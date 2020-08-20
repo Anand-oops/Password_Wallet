@@ -16,7 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 public class EntryInput extends AppCompatActivity {
     private static final String TAG = "EntryInput";
     EntryHelper entryHelper = new EntryHelper(this);
-
+    CryptoHelper cryptoHelper = new CryptoHelper();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class EntryInput extends AppCompatActivity {
         return true;
     }
 
-    public void saveEntry(MenuItem item) {
+    public void saveEntry(MenuItem item) throws Exception {
         EditText name = findViewById(R.id.name);
         EditText userId = findViewById(R.id.userid);
         EditText password = findViewById(R.id.password);
@@ -62,11 +62,12 @@ public class EntryInput extends AppCompatActivity {
             alertDialog.show();
         } else {
             if (entryHelper.insert(name.getText().toString().trim(), userId.getText().toString().trim(),
-                    password.getText().toString().trim(), note.getText().toString().trim())) {
+                    cryptoHelper.encrypt(password.getText().toString().trim(), userId.getText().toString().trim()), note.getText().toString().trim())) {
                 Snackbar.make(getWindow().getDecorView(), "Data Added...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 finish();
             }
         }
     }
+
 }

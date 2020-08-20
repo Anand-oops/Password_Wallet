@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ public class EditEntry extends AppCompatActivity {
     int id;
     EntryHelper entryHelper = new EntryHelper(this);
     EntryClass entry;
+    CryptoHelper cryptoHelper = new CryptoHelper();
 
 
     @Override
@@ -39,7 +41,12 @@ public class EditEntry extends AppCompatActivity {
             entry = entryHelper.getRow(id);
             mName.setText(entry.getName());
             mUser.setText(entry.getUser());
-            mPassword.setText(entry.getPass());
+            try {
+                mPassword.setText(cryptoHelper.decrypt(entry.getPass(), entry.getUser()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Error in decrypting", Toast.LENGTH_SHORT).show();
+            }
             mNote.setText(entry.getNote());
         }
     }
