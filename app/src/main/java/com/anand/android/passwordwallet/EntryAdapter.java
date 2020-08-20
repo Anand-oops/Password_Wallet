@@ -15,10 +15,10 @@ import java.util.ArrayList;
 public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHolder> {
 
     private static final String TAG = "EntryAdapter";
-    public ArrayList<String> userEntries;
+    public ArrayList<EntryClass> userEntries;
     public Context context;
 
-    public EntryAdapter(Context ctx, ArrayList<String> values) {
+    public EntryAdapter(Context ctx, ArrayList<EntryClass> values) {
         this.userEntries = values;
         this.context = ctx;
     }
@@ -33,13 +33,13 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
 
     @Override
     public void onBindViewHolder(@NonNull EntryViewHolder holder, final int position) {
-        holder.mTextView.setText(userEntries.get(position));
+        holder.mTextView.setText(userEntries.get(position).getName());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String text = userEntries.get(position);
+                int id = userEntries.get(position).getId();
                 Intent intent = new Intent(context, EditEntry.class);
-                intent.putExtra("id", position);
+                intent.putExtra("id", id);
                 context.startActivity(intent);
             }
         });

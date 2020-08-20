@@ -27,7 +27,7 @@ public class EntriesFragment extends Fragment {
 
     private static final String TAG = "EntriesFragment";
     EntryHelper entryHelper;
-    ArrayList<String> list;
+    ArrayList<EntryClass> list;
     EntryAdapter adapter;
     RecyclerView userEntries;
 
@@ -56,10 +56,10 @@ public class EntriesFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                ArrayList<String> filteredList = new ArrayList<>();
+                ArrayList<EntryClass> filteredList = new ArrayList<>();
 
-                for (String entry : list) {
-                    if (entry.toLowerCase().contains(s.toLowerCase())) {
+                for (EntryClass entry : list) {
+                    if (entry.getName().toLowerCase().contains(s.toLowerCase())) {
                         filteredList.add(entry);
                     }
                 }
@@ -97,7 +97,9 @@ public class EntriesFragment extends Fragment {
                 tv.setVisibility(View.GONE);
             list.clear();
             while (cursor.moveToNext()) {
-                list.add(cursor.getString(1));
+                EntryClass entry = new EntryClass(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                        cursor.getString(3), cursor.getString(4));
+                list.add(entry);
             }
             adapter = new EntryAdapter(getActivity(), list);
             userEntries.setHasFixedSize(true);
