@@ -10,8 +10,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class CryptoHelper {
     String AES = "AES";
+    String password = "PasswordWalletByAnand";
 
-    String encrypt(String Data, String password) throws Exception {
+    String encrypt(String Data) throws Exception {
         SecretKeySpec key = generateKey(password);
         Cipher cipher = Cipher.getInstance(AES);
         cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -27,7 +28,7 @@ public class CryptoHelper {
         return new SecretKeySpec(key, "AES");
     }
 
-    String decrypt(String outputString, String password) throws Exception {
+    String decrypt(String outputString) throws Exception {
         SecretKeySpec key = generateKey(password);
         Cipher cipher = Cipher.getInstance(AES);
         cipher.init(Cipher.DECRYPT_MODE, key);

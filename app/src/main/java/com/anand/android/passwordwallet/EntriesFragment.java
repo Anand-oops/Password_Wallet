@@ -3,6 +3,7 @@ package com.anand.android.passwordwallet;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -96,10 +97,13 @@ public class EntriesFragment extends Fragment {
             if (tv.getVisibility() == View.VISIBLE)
                 tv.setVisibility(View.GONE);
             list.clear();
-            while (cursor.moveToNext()) {
-                EntryClass entry = new EntryClass(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                        cursor.getString(3), cursor.getString(4));
-                list.add(entry);
+            if (cursor.moveToFirst()) {
+                do {
+                    Log.i(TAG, "viewData: " + cursor.getInt(0));
+                    EntryClass entry = new EntryClass(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                            cursor.getString(3), cursor.getString(4));
+                    list.add(entry);
+                } while (cursor.moveToNext());
             }
             adapter = new EntryAdapter(getActivity(), list);
             userEntries.setHasFixedSize(true);

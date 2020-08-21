@@ -1,17 +1,20 @@
 package com.anand.android.passwordwallet;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.snackbar.Snackbar;
 
 public class EntryInput extends AppCompatActivity {
     private static final String TAG = "EntryInput";
@@ -61,13 +64,31 @@ public class EntryInput extends AppCompatActivity {
             alertDialog.setCancelable(false);
             alertDialog.show();
         } else {
+            View view = this.getCurrentFocus();
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            assert view != null;
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
             if (entryHelper.insert(name.getText().toString().trim(), userId.getText().toString().trim(),
-                    cryptoHelper.encrypt(password.getText().toString().trim(), userId.getText().toString().trim()), note.getText().toString().trim())) {
-                Snackbar.make(getWindow().getDecorView(), "Data Added...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                finish();
+                    cryptoHelper.encrypt(password.getText().toString().trim()), note.getText().toString().trim())) {
+
+                final ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setTitle("Encrypting...");
+                dialog.setMessage("Saving your data");
+                dialog.setIndeterminate(true);
+                dialog.setIcon(android.R.drawable.ic_menu_save);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                        finish();
+                    }
+                }, 1000);
             }
         }
     }
-
 }

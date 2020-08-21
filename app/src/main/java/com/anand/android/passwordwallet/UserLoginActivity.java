@@ -1,9 +1,11 @@
 package com.anand.android.passwordwallet;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -54,13 +56,10 @@ public class UserLoginActivity extends AppCompatActivity {
         TextView emailTV = findViewById(R.id.email);
         ImageView photoIV = findViewById(R.id.photo);
 
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
-        // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(UserLoginActivity.this);
@@ -120,12 +119,10 @@ public class UserLoginActivity extends AppCompatActivity {
                     if (db.checkEmail(userEmail)) {
                         boolean insert = db.insert(userEmail, password);
                         if (insert) {
-                            Toast.makeText(getApplicationContext(), "Registered Successfully", Toast.LENGTH_SHORT).show();
                             MasterLogin();
                         }
                     } else {
                         if (db.checked(userEmail, password)) {
-                            Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                             MasterLogin();
                         } else {
                             AlertDialog.Builder dialog = new AlertDialog.Builder(UserLoginActivity.this);
@@ -150,12 +147,27 @@ public class UserLoginActivity extends AppCompatActivity {
     }
 
     public void MasterLogin() {
-        Intent intent = new Intent(UserLoginActivity.this, DashboardActivity.class);
-        intent.putExtra("user",userName);
-        intent.putExtra("email",userEmail);
-        intent.putExtra("dp",displayPicture.toString());
-        startActivity(intent);
-        finish();
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setTitle("Entering Wallet !");
+        dialog.setMessage("Logging you in...");
+        dialog.setIndeterminate(true);
+        dialog.setIcon(R.drawable.ic_login);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+                Intent intent = new Intent(UserLoginActivity.this, DashboardActivity.class);
+                intent.putExtra("user", userName);
+                intent.putExtra("email", userEmail);
+                intent.putExtra("dp", displayPicture.toString());
+                startActivity(intent);
+                finish();
+            }
+        }, 1500);
     }
 
     private void Change() {

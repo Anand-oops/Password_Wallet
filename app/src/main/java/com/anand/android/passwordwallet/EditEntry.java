@@ -1,7 +1,10 @@
 package com.anand.android.passwordwallet;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,9 +21,9 @@ public class EditEntry extends AppCompatActivity {
     private static final String TAG = "EditEntry";
     EditText mName, mUser, mPassword, mNote;
     int id;
-    EntryHelper entryHelper = new EntryHelper(this);
     EntryClass entry;
-    CryptoHelper cryptoHelper = new CryptoHelper();
+    CryptoHelper cryptoHelper;
+    private Context context = this;
 
 
     @Override
@@ -29,6 +32,7 @@ public class EditEntry extends AppCompatActivity {
         setContentView(R.layout.activity_new_entry);
 
 
+        cryptoHelper = new CryptoHelper();
         id = getIntent().getIntExtra("id", 0);
         Log.i(TAG, "onCreate: ID" + id);
         mName = findViewById(R.id.name);
@@ -38,11 +42,12 @@ public class EditEntry extends AppCompatActivity {
         if (id == 0) {
             finish();
         } else {
+            EntryHelper entryHelper = new EntryHelper(this);
             entry = entryHelper.getRow(id);
             mName.setText(entry.getName());
             mUser.setText(entry.getUser());
             try {
-                mPassword.setText(cryptoHelper.decrypt(entry.getPass(), entry.getUser()));
+                mPassword.setText(cryptoHelper.decrypt(entry.getPass()));
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Error in decrypting", Toast.LENGTH_SHORT).show();
@@ -60,11 +65,32 @@ public class EditEntry extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        final EntryHelper entryHelper = new EntryHelper(this);
         switch (item.getItemId()) {
             case R.id.edit_entry:
-                if (entryHelper.updateRow(id, mName.getText().toString(), mUser.getText().toString(),
-                        mPassword.getText().toString(), mNote.getText().toString())) {
-                    finish();
+                cryptoHelper = new CryptoHelper();
+                try {
+                    if (entryHelper.updateRow(id, mName.getText().toString().trim(), mUser.getText().toString().trim(),
+                            cryptoHelper.encrypt(mPassword.getText().toString().trim()), mNote.getText().toString().trim())) {
+                        final ProgressDialog dialog = new ProgressDialog(this);
+                        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        dialog.setTitle("Saving");
+                        dialog.setMessage("Updating your entry...");
+                        dialog.setIndeterminate(true);
+                        dialog.setIcon(android.R.drawable.ic_menu_upload);
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.show();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        }, 1000);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case R.id.delete:
@@ -76,8 +102,23 @@ public class EditEntry extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int which) {
-                                entryHelper.deleteRow(entry);
-                                finish();
+                                final ProgressDialog progressDialog = new ProgressDialog(context);
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.setTitle("Deleting...");
+                                progressDialog.setMessage("Deleting your entry");
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.setIcon(android.R.drawable.ic_menu_delete);
+                                progressDialog.setCanceledOnTouchOutside(false);
+                                progressDialog.show();
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        entryHelper.deleteRow(entry);
+                                        progressDialog.dismiss();
+                                        finish();
+                                    }
+                                }, 1000);
                             }
                         });
                 dialog.setNegativeButton("Cancel",
