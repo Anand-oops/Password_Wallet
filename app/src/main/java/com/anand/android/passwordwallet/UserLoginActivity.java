@@ -1,23 +1,19 @@
 package com.anand.android.passwordwallet;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,8 +22,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.common.api.Scope;
+import com.google.api.services.drive.DriveScopes;
 
 import java.util.Objects;
 
@@ -47,7 +43,6 @@ public class UserLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
-
         Button changeUser = findViewById(R.id.change_user);
         checkBox = findViewById(R.id.checkBox);
         TextView nameTV = findViewById(R.id.name);
@@ -57,8 +52,7 @@ public class UserLoginActivity extends AppCompatActivity {
         ImageView photoIV = findViewById(R.id.photo);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
+                .requestScopes(new Scope(DriveScopes.DRIVE_FILE)).requestEmail().build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
@@ -78,10 +72,7 @@ public class UserLoginActivity extends AppCompatActivity {
                 dialog.setTitle("Wait!!");
                 dialog.setIcon(android.R.drawable.ic_dialog_info);
                 dialog.setPositiveButton("Register",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                            }
+                        (dialog1, which) -> {
                         });
                 AlertDialog alertDialog = dialog.create();
                 alertDialog.setCancelable(false);
@@ -90,56 +81,40 @@ public class UserLoginActivity extends AppCompatActivity {
             }
         }
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (!isChecked) {
-                    pEntry.setTransformationMethod(new PasswordTransformationMethod());
+        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (!isChecked) {
+                pEntry.setTransformationMethod(new PasswordTransformationMethod());
+            } else {
+                pEntry.setTransformationMethod(new HideReturnsTransformationMethod());
+            }
+            pEntry.setSelection(pEntry.getText().length());
+        });
+
+        changeUser.setOnClickListener(view -> Change());
+
+        loginButton.setOnClickListener(view -> {
+            final String password = pEntry.getText().toString().trim();
+            if (password.length() == 0)
+                Toast.makeText(getApplicationContext(), "Field is empty", Toast.LENGTH_SHORT).show();
+            else {
+                if (db.checkEmail(userEmail)) {
+                    boolean insert = db.insert(userEmail, password);
+                    if (insert) {
+                        MasterLogin();
+                    }
                 } else {
-                    pEntry.setTransformationMethod(new HideReturnsTransformationMethod());
-                }
-                pEntry.setSelection(pEntry.getText().length());
-            }
-        });
-
-        changeUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Change();
-            }
-        });
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String password = pEntry.getText().toString().trim();
-                if (password.length() == 0)
-                    Toast.makeText(getApplicationContext(), "Field is empty", Toast.LENGTH_SHORT).show();
-                else {
-                    if (db.checkEmail(userEmail)) {
-                        boolean insert = db.insert(userEmail, password);
-                        if (insert) {
-                            MasterLogin();
-                        }
+                    if (db.checked(userEmail, password)) {
+                        MasterLogin();
                     } else {
-                        if (db.checked(userEmail, password)) {
-                            MasterLogin();
-                        } else {
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(UserLoginActivity.this);
-                            dialog.setMessage("Wrong Password");
-                            dialog.setTitle("Error");
-                            dialog.setIcon(android.R.drawable.ic_dialog_alert);
-                            dialog.setPositiveButton("OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog,
-                                                            int which) {
-                                            pEntry.setText("");
-                                        }
-                                    });
-                            AlertDialog alertDialog = dialog.create();
-                            alertDialog.setCancelable(false);
-                            alertDialog.show();
-                        }
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(UserLoginActivity.this);
+                        dialog.setMessage("Wrong Password");
+                        dialog.setTitle("Error");
+                        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+                        dialog.setPositiveButton("OK",
+                                (dialog12, which) -> pEntry.setText(""));
+                        AlertDialog alertDialog = dialog.create();
+                        alertDialog.setCancelable(false);
+                        alertDialog.show();
                     }
                 }
             }
@@ -156,29 +131,20 @@ public class UserLoginActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dialog.dismiss();
-                Intent intent = new Intent(UserLoginActivity.this, DashboardActivity.class);
-                intent.putExtra("user", userName);
-                intent.putExtra("email", userEmail);
-                intent.putExtra("dp", displayPicture.toString());
-                startActivity(intent);
-                finish();
-            }
+        handler.postDelayed(() -> {
+            dialog.dismiss();
+            Intent intent = new Intent(UserLoginActivity.this, DashboardActivity.class);
+            startActivity(intent);
+            finish();
         }, 1500);
     }
 
     private void Change() {
         mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(UserLoginActivity.this, "Select your Account", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(UserLoginActivity.this, GoogleSignInActivity.class));
-                        finish();
-                    }
+                .addOnCompleteListener(this, task -> {
+                    Toast.makeText(UserLoginActivity.this, "Select your Account", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(UserLoginActivity.this, GoogleSignInActivity.class));
+                    finish();
                 });
     }
 

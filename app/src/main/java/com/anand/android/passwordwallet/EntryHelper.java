@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class EntryHelper extends SQLiteOpenHelper {
 
@@ -17,7 +16,6 @@ public class EntryHelper extends SQLiteOpenHelper {
     private static final String ENTRIES_USER = "username";
     private static final String ENTRIES_PASSWORD = "password";
     private static final String ENTRIES_NOTE = "note";
-    private static final String TAG = "EntryHelper";
 
     public EntryHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,7 +26,6 @@ public class EntryHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_WEBSITES = "CREATE TABLE " + TABLE_ENTRIES + "(" + ENTRIES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ENTRIES_NAME + " TEXT , " + ENTRIES_USER + " TEXT, " + ENTRIES_PASSWORD + " TEXT, " + ENTRIES_NOTE + " TEXT)";
         sqLiteDatabase.execSQL(CREATE_TABLE_WEBSITES);
-        Log.i(TAG, "onCreate: TABLE CREATED");
     }
 
     @Override
@@ -46,29 +43,23 @@ public class EntryHelper extends SQLiteOpenHelper {
         contentValues.put(ENTRIES_NOTE, note);
         long ins = db.insert(TABLE_ENTRIES, null, contentValues);
         db.close();
-        Log.d(TAG, "insert: Value inserted");
         return ins != -1;
     }
 
     public Cursor ViewData() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * from " + TABLE_ENTRIES;
-        Cursor cursor = db.rawQuery(query, null);
-        Log.i(TAG, "ViewData: cursorPos" + cursor.getPosition());
-        return cursor;
+        return db.rawQuery(query, null);
     }
 
     public EntryClass getRow(int id) {
-        Log.i(TAG, "getRow: ID " + id);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ENTRIES + " WHERE " + ENTRIES_ID + " = " + id + "", null);
-        Log.i(TAG, "getRow: cursorPos" + cursor.getPosition());
-        Log.i(TAG, "getRow: cursor" + cursor.getCount());
-
         cursor.moveToFirst();
         EntryClass entry = new EntryClass(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
                 cursor.getString(3), cursor.getString(4));
         cursor.close();
+        db.close();
         return entry;
     }
 

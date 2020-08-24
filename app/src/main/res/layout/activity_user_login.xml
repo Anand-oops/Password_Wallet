@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorUiLightRed"
     tools:context=".UserLoginActivity">
 
 
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="158dp"
+        android:layout_marginTop="100dp"
         android:orientation="vertical">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -30,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Name: NAME HERE"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/white"
             android:textSize="18sp" />
 
         <TextView
@@ -39,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Email: EMAIL HERE"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/white"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -57,7 +58,7 @@
 
     <Button
         android:id="@+id/login"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/checkBox"
         android:layout_centerHorizontal="true"
@@ -69,11 +70,11 @@
 
     <Button
         android:id="@+id/change_user"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/login"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginTop="30dp"
         android:background="@color/colorPrimary"
         android:elevation="10dp"
         android:text="Change User"

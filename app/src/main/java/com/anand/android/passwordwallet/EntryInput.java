@@ -2,10 +2,8 @@ package com.anand.android.passwordwallet;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +36,6 @@ public class EntryInput extends AppCompatActivity {
         EditText userId = findViewById(R.id.userid);
         EditText password = findViewById(R.id.password);
         EditText note = findViewById(R.id.note);
-        Log.i(TAG, "saveEntry: name" + name.getText().toString());
 
         if (name.getText().toString().trim().isEmpty() || userId.getText().toString().trim().isEmpty()
                 || password.getText().toString().trim().isEmpty()) {
@@ -48,18 +45,10 @@ public class EntryInput extends AppCompatActivity {
             dialog.setTitle("Error !");
             dialog.setIcon(R.drawable.ic_block);
             dialog.setPositiveButton("Enter Again",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
-                                            int which) {
-                        }
+                    (dialog1, which) -> {
                     });
             dialog.setNegativeButton("Cancel Feed",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    });
+                    (dialogInterface, i) -> finish());
             AlertDialog alertDialog = dialog.create();
             alertDialog.setCancelable(false);
             alertDialog.show();

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHolder> {
 
-    private static final String TAG = "EntryAdapter";
     public ArrayList<EntryClass> userEntries;
     public Context context;
 
@@ -36,29 +35,23 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
     @Override
     public void onBindViewHolder(@NonNull EntryViewHolder holder, final int position) {
         holder.mTextView.setText(userEntries.get(position).getName());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final ProgressDialog dialog = new ProgressDialog(context);
-                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dialog.setTitle("Loading");
-                dialog.setMessage("Opening your data...");
-                dialog.setIndeterminate(true);
-                dialog.setIcon(android.R.drawable.ic_menu_edit);
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.show();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                        int id = userEntries.get(position).getId();
-                        Intent intent = new Intent(context, EditEntry.class);
-                        intent.putExtra("id", id);
-                        context.startActivity(intent);
-                    }
-                }, 800);
-            }
+        holder.itemView.setOnClickListener(view -> {
+            final ProgressDialog dialog = new ProgressDialog(context);
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setTitle("Decrypting...");
+            dialog.setMessage("Loading your data...");
+            dialog.setIndeterminate(true);
+            dialog.setIcon(android.R.drawable.ic_menu_edit);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                dialog.dismiss();
+                int id = userEntries.get(position).getId();
+                Intent intent = new Intent(context, EditEntry.class);
+                intent.putExtra("id", id);
+                context.startActivity(intent);
+            }, 800);
         });
     }
 

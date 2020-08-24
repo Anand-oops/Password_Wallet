@@ -1,36 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient1">
 
-    <TextView
-        android:id="@+id/NoDataTV"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="No Entry to display..."
-        android:textAlignment="center"
-        android:visibility="gone" />
+        android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_margin="12dp"
-        android:id="@+id/entriesList"
-        android:layout_height="wrap_content"
-        android:scrollbarThumbVertical="@android:color/holo_red_dark"
-        android:scrollbars="vertical"
-        android:verticalScrollbarPosition="defaultPosition"
-        android:layout_width="match_parent" />
+        <TextView
+            android:id="@+id/NoDataTV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="No Entry to display..."
+            android:textAlignment="center"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/entriesList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:scrollbarThumbVertical="@android:color/holo_red_dark"
+            android:scrollbars="vertical"
+            android:verticalScrollbarPosition="defaultPosition" />
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
         android:id="@+id/fab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_add"
-        android:clickable="true"
-        android:background="@android:color/holo_red_light"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="40dp"
-        android:focusable="true" />
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_add" />
 
 </RelativeLayout>

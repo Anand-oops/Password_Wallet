@@ -10,10 +10,6 @@
         android:title="SearchButton" />
 
     <item
-        android:id="@+id/sync"
-        android:title="Sync"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/del_data"
         android:title="Delete Database"
         app:showAsAction="never" />
