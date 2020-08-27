@@ -1,6 +1,7 @@
 package com.anand.android.passwordwallet;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -94,9 +95,22 @@ public class UserLoginActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(view -> {
             final String password = pEntry.getText().toString().trim();
-            if (password.length() == 0)
-                Toast.makeText(getApplicationContext(), "Field is empty", Toast.LENGTH_SHORT).show();
-            else {
+            if (password.isEmpty() || password.length() < 6) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(UserLoginActivity.this);
+                dialog.setMessage("6 minimum characters required in password...");
+                dialog.setTitle("Credentials Error");
+                dialog.setIcon(R.drawable.ic_block);
+                dialog.setPositiveButton("RETRY",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                pEntry.setText("");
+                            }
+                        });
+                AlertDialog alertDialog = dialog.create();
+                alertDialog.setCancelable(false);
+                alertDialog.show();
+            } else {
                 if (db.checkEmail(userEmail)) {
                     boolean insert = db.insert(userEmail, password);
                     if (insert) {

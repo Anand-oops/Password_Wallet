@@ -5,11 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import static android.content.ContentValues.TAG;
 
 public class EntryHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "SyncToDrive.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
     private static final String TABLE_ENTRIES = "entries";
     private static String ENTRIES_ID = "id";
     private static final String ENTRIES_NAME = "name";
@@ -23,7 +26,7 @@ public class EntryHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_TABLE_WEBSITES = "CREATE TABLE " + TABLE_ENTRIES + "(" + ENTRIES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        String CREATE_TABLE_WEBSITES = "CREATE TABLE IF NOT EXISTS " + TABLE_ENTRIES + "(" + ENTRIES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ENTRIES_NAME + " TEXT , " + ENTRIES_USER + " TEXT, " + ENTRIES_PASSWORD + " TEXT, " + ENTRIES_NOTE + " TEXT)";
         sqLiteDatabase.execSQL(CREATE_TABLE_WEBSITES);
     }
@@ -78,6 +81,14 @@ public class EntryHelper extends SQLiteOpenHelper {
     public void deleteRow(EntryClass entry) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ENTRIES, ENTRIES_ID + " =?", new String[]{String.valueOf(entry.getId())});
+        db.close();
+    }
+
+    public void deleteDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("drop table if exists " + TABLE_ENTRIES);
+        Log.i(TAG, "deleteDatabase: DELETED");
+        onCreate(db);
         db.close();
     }
 }

@@ -29,6 +29,11 @@ public class DriveServiceHelper {
     private final Executor mExecutor = Executors.newSingleThreadExecutor();
     Activity activity;
     private Drive mDriveService;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
 
     public DriveServiceHelper(Activity activity) {
         this.activity = activity;
@@ -39,7 +44,7 @@ public class DriveServiceHelper {
 
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
             GoogleAccountCredential credential = GoogleAccountCredential.
-                    usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_FILE));
+                    usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_METADATA));
 
             assert acct != null;
             credential.setSelectedAccount(acct.getAccount());
@@ -66,8 +71,7 @@ public class DriveServiceHelper {
             if (myFile == null) {
                 throw new IOException("Null result when requesting file creation");
             }
-            myFile.setId("PasswordWalletDB");
-            Log.i(TAG, "createFileSql: ID" + myFile.getId());
+            id = myFile.getId();
             return myFile.getId();
         });
     }
@@ -77,7 +81,7 @@ public class DriveServiceHelper {
 
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
             GoogleAccountCredential credential = GoogleAccountCredential.
-                    usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_FILE));
+                    usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_METADATA));
 
             assert acct != null;
             credential.setSelectedAccount(acct.getAccount());
@@ -87,7 +91,6 @@ public class DriveServiceHelper {
 
             Log.i(TAG, "downloadFile: " + fileId);
             @SuppressLint("SdCardPath") String filePath = activity.getDatabasePath("SyncToDrive.db").getAbsolutePath();
-            Log.i(TAG, "downloadFile: filepath" + filePath);
             java.io.File file = new java.io.File(filePath);
 
             OutputStream outputStream = new FileOutputStream(file);
@@ -96,11 +99,14 @@ public class DriveServiceHelper {
             outputStream.flush();
             outputStream.close();
             return null;
+
         });
     }
 
-    public Task<Void> deletePreviousFile(String fileId) {
+
+    public Task<Void> deletePreviousFile(final String fileId) {
         return Tasks.call(mExecutor, () -> {
+            Log.i(TAG, "deletePreviousFile: delete file " + fileId);
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
             GoogleAccountCredential credential = GoogleAccountCredential.
                     usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_FILE));
@@ -117,4 +123,6 @@ public class DriveServiceHelper {
             return null;
         });
     }
+
+
 }

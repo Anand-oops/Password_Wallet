@@ -1,12 +1,15 @@
 package com.anand.android.passwordwallet;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,18 +28,23 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.navigation.NavigationView;
 
-public class DashboardActivity extends AppCompatActivity  {
+public class DashboardActivity extends AppCompatActivity {
 
     private static final String TAG = "Dashboard";
     private DrawerLayout drawerLayout;
     DriveServiceHelper driveServiceHelper = new DriveServiceHelper(this);
     private String userEmail;
+    public static final String MY_PREFERENCES = "MyPrefs";
+    SharedPreferences sharedPreferences;
+    String databaseId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
         NavigationView navigationView = findViewById(R.id.nav_view);
+        sharedPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(DashboardActivity.this);
         assert acct != null;
@@ -126,8 +134,7 @@ public class DashboardActivity extends AppCompatActivity  {
         progressDialog.setMessage("Please wait...");
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
-
-        driveServiceHelper.downloadFile("PasswordWalletDB").addOnSuccessListener(aVoid -> {
+        driveServiceHelper.downloadFile(databaseId).addOnSuccessListener(aVoid -> {
             progressDialog.dismiss();
             Toast.makeText(DashboardActivity.this, "Downloading Success", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> {
@@ -135,7 +142,6 @@ public class DashboardActivity extends AppCompatActivity  {
             e.printStackTrace();
             Toast.makeText(DashboardActivity.this, "Error downloading file", Toast.LENGTH_SHORT).show();
         });
-
     }
 
     public void fileUpload() {
@@ -149,18 +155,21 @@ public class DashboardActivity extends AppCompatActivity  {
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
-
         driveServiceHelper.createFileSql().addOnSuccessListener(s -> {
             progressDialog.dismiss();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("id", driveServiceHelper.getId()).apply();
+            databaseId = driveServiceHelper.getId();
             Toast.makeText(DashboardActivity.this, "Uploading Success", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener((Exception e) -> {
             progressDialog.dismiss();
             Toast.makeText(DashboardActivity.this, "Error uploading file", Toast.LENGTH_SHORT).show();
         });
+        onResume();
     }
 
     private void deletePrevious() {
-        driveServiceHelper.deletePreviousFile("PasswordWalletDB")
+        driveServiceHelper.deletePreviousFile(databaseId)
                 .addOnFailureListener(e -> Log.i(TAG, "onFailure on Deleting File Exception : " + e.getMessage()));
     }
 
@@ -203,5 +212,43 @@ public class DashboardActivity extends AppCompatActivity  {
             alertDialog.setCancelable(false);
             alertDialog.show();
         }
+    }
+
+    public void deleteDatabase(MenuItem item) {
+        EntryHelper entryHelper = new EntryHelper(DashboardActivity.this);
+        AlertDialog.Builder dialog1 = new AlertDialog.Builder(DashboardActivity.this);
+        dialog1.setMessage("All the entries will be deleted... ");
+        dialog1.setTitle("Caution !");
+        dialog1.setIcon(R.drawable.ic_delete);
+        dialog1.setPositiveButton("Delete",
+                (dialog2, which) -> {
+                    final ProgressDialog progressDialog = new ProgressDialog(DashboardActivity.this);
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setTitle("Deleting Database");
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setIcon(R.drawable.ic_delete);
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
+                    Handler handler = new Handler();
+                    handler.postDelayed(() -> {
+                        progressDialog.dismiss();
+                        entryHelper.deleteDatabase();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new EntriesFragment()).commit();
+
+                    }, 1000);
+                });
+        dialog1.setNegativeButton("Cancel",
+                (dialogInterface, i) -> {
+                });
+        AlertDialog alertdialog = dialog1.create();
+        alertdialog.setCancelable(false);
+        alertdialog.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        databaseId = sharedPreferences.getString("id", "fakeId");
+        Log.i(TAG, "onCreate: databaseId " + databaseId);
     }
 }

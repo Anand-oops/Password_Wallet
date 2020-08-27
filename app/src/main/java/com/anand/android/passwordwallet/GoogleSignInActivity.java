@@ -36,7 +36,8 @@ public class GoogleSignInActivity extends AppCompatActivity {
         requestPermission();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(new Scope(DriveScopes.DRIVE_FILE)).requestEmail().build();
+                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
+                .requestScopes(new Scope(DriveScopes.DRIVE_METADATA)).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         signInButton = findViewById(R.id.sign_in_button);
@@ -72,6 +73,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             startActivity(new Intent(GoogleSignInActivity.this, UserLoginActivity.class));
+            finish();
         } catch (ApiException e) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(GoogleSignInActivity.this);
             dialog.setMessage("Account Required");

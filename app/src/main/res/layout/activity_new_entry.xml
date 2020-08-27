@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
+            android:fontFamily="@font/marko_one"
             android:hint="ENTRY NAME"
             android:text="" />
     </androidx.cardview.widget.CardView>
@@ -36,6 +37,7 @@
             android:id="@+id/userid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/marko_one"
             android:layout_margin="20dp"
             android:hint="USER ID" />
     </androidx.cardview.widget.CardView>
@@ -52,6 +54,7 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/marko_one"
             android:layout_margin="20dp"
             android:hint="PASSWORD" />
     </androidx.cardview.widget.CardView>
@@ -68,6 +71,7 @@
             android:id="@+id/note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/marko_one"
             android:layout_margin="20dp"
             android:hint="NOTE" />
     </androidx.cardview.widget.CardView>

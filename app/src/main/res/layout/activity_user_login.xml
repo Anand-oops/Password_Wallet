@@ -29,6 +29,8 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/merienda_one"
             android:layout_gravity="center"
             android:text="Name: NAME HERE"
             android:textColor="@android:color/white"
@@ -37,6 +39,8 @@
         <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/merienda_one"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Email: EMAIL HERE"
@@ -50,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/details"
         android:layout_centerHorizontal="true"
+        android:fontFamily="@font/marko_one"
         android:layout_marginTop="50dp"
         android:ems="10"
         android:hint="Password"
@@ -62,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/checkBox"
         android:layout_centerHorizontal="true"
+        android:fontFamily="@font/rock_salt"
         android:layout_marginTop="30dp"
         android:background="@color/colorPrimary"
         android:elevation="10dp"
@@ -73,6 +79,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/login"
+        android:fontFamily="@font/rock_salt"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:background="@color/colorPrimary"
@@ -86,6 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/password"
         android:layout_centerHorizontal="true"
+        android:fontFamily="@font/merienda_one"
         android:text="Show Password" />
 
 </RelativeLayout>
