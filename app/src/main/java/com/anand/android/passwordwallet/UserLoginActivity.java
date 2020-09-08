@@ -1,7 +1,6 @@
 package com.anand.android.passwordwallet;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -101,12 +100,7 @@ public class UserLoginActivity extends AppCompatActivity {
                 dialog.setTitle("Credentials Error");
                 dialog.setIcon(R.drawable.ic_block);
                 dialog.setPositiveButton("RETRY",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                pEntry.setText("");
-                            }
-                        });
+                        (dialog13, which) -> pEntry.setText(""));
                 AlertDialog alertDialog = dialog.create();
                 alertDialog.setCancelable(false);
                 alertDialog.show();
@@ -150,7 +144,7 @@ public class UserLoginActivity extends AppCompatActivity {
             Intent intent = new Intent(UserLoginActivity.this, DashboardActivity.class);
             startActivity(intent);
             finish();
-        }, 1500);
+        }, 1000);
     }
 
     private void Change() {

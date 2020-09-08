@@ -3,6 +3,7 @@ package com.anand.android.passwordwallet;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +26,8 @@ import java.util.ArrayList;
 
 public class EntriesFragment extends Fragment {
 
-    EntryHelper entryHelper;
+
+    private static final String TAG = "Entries Fragment";
     ArrayList<EntryClass> list;
     EntryAdapter adapter;
     RecyclerView userEntries;
@@ -34,7 +36,6 @@ public class EntriesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_entries, container, false);
-        entryHelper = new EntryHelper(getActivity());
         userEntries = rootView.findViewById(R.id.entriesList);
         setHasOptionsMenu(true);
         return rootView;
@@ -75,16 +76,14 @@ public class EntriesFragment extends Fragment {
 
         list = new ArrayList<>();
         FloatingActionButton fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), EntryInput.class);
-                startActivity(intent);
-            }
+        fab.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getActivity(), EntryInput.class);
+            startActivity(intent);
         });
     }
 
     public void viewData() {
+        EntryHelper entryHelper = new EntryHelper(getActivity());
         Cursor cursor = entryHelper.ViewData();
         list.clear();
         if (cursor.getCount() == 0) {
@@ -116,5 +115,9 @@ public class EntriesFragment extends Fragment {
         super.onResume();
     }
 
-
+    @Override
+    public void onPause() {
+        Log.i(TAG, "onPause: entries fragment paused");
+        super.onPause();
+    }
 }

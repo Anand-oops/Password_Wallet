@@ -44,7 +44,7 @@ public class DriveServiceHelper {
 
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
             GoogleAccountCredential credential = GoogleAccountCredential.
-                    usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_METADATA));
+                    usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_FILE));
 
             assert acct != null;
             credential.setSelectedAccount(acct.getAccount());
@@ -81,7 +81,7 @@ public class DriveServiceHelper {
 
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
             GoogleAccountCredential credential = GoogleAccountCredential.
-                    usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_METADATA));
+                    usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_FILE));
 
             assert acct != null;
             credential.setSelectedAccount(acct.getAccount());

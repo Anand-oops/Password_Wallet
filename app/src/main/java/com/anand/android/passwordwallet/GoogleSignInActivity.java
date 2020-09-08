@@ -4,6 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -25,6 +29,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL = 0;
     SignInButton signInButton;
+    RelativeLayout choiceLayout;
     private GoogleSignInClient mGoogleSignInClient;
     private static final int SIGN_IN = 1;
 
@@ -33,11 +38,10 @@ public class GoogleSignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_sign_in);
 
-        requestPermission();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
-                .requestScopes(new Scope(DriveScopes.DRIVE_METADATA)).requestEmail().build();
+                .requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         signInButton = findViewById(R.id.sign_in_button);
@@ -72,9 +76,23 @@ public class GoogleSignInActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            startActivity(new Intent(GoogleSignInActivity.this, UserLoginActivity.class));
-            finish();
+            signInButton.setVisibility(View.GONE);
+            choiceLayout.setVisibility(View.VISIBLE);
+            RadioGroup radioGroup = findViewById(R.id.radioGroup);
+            radioGroup.setOnCheckedChangeListener((radioGroup1, i) -> {
+                switch (radioGroup1.findViewById(i).getId()) {
+                    case R.id.create_new_radio:
+                        startActivity(new Intent(GoogleSignInActivity.this, UserLoginActivity.class));
+                        finish();
+                        break;
+                    case R.id.restore_radio:
+                        restoreFromDrive();
+                        break;
+                }
+            });
+
         } catch (ApiException e) {
+
             AlertDialog.Builder dialog = new AlertDialog.Builder(GoogleSignInActivity.this);
             dialog.setMessage("Account Required");
             dialog.setTitle("Select an account to proceed...");
@@ -88,8 +106,15 @@ public class GoogleSignInActivity extends AppCompatActivity {
         }
     }
 
+    private void restoreFromDrive() {
+        Toast.makeText(this, "Select file", Toast.LENGTH_SHORT).show();
+    }
+
+
     @Override
     protected void onStart() {
+        requestPermission();
+        choiceLayout = findViewById(R.id.layout_choice);
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null) {
             startActivity(new Intent(GoogleSignInActivity.this, UserLoginActivity.class));

@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -127,6 +126,7 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+
     private void fileDownload() {
         ProgressDialog progressDialog = new ProgressDialog(DashboardActivity.this);
         progressDialog.setTitle("Downloading from Google Drive");
@@ -136,12 +136,31 @@ public class DashboardActivity extends AppCompatActivity {
         progressDialog.show();
         driveServiceHelper.downloadFile(databaseId).addOnSuccessListener(aVoid -> {
             progressDialog.dismiss();
-            Toast.makeText(DashboardActivity.this, "Downloading Success", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
+            dialog.setMessage("Downloading Success...");
+            dialog.setPositiveButton("OK",
+                    (dialog1, which) -> {
+
+                    });
+            AlertDialog alertDialog = dialog.create();
+            alertDialog.setCancelable(false);
+            alertDialog.show();
         }).addOnFailureListener(e -> {
             progressDialog.dismiss();
             e.printStackTrace();
-            Toast.makeText(DashboardActivity.this, "Error downloading file", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
+            dialog.setMessage("Downloading Failed...");
+            dialog.setPositiveButton("OK",
+                    (dialog1, which) -> {
+
+                    });
+            AlertDialog alertDialog = dialog.create();
+            alertDialog.setCancelable(false);
+            alertDialog.show();
         });
+        //EntriesFragment entriesFragment = new EntriesFragment();
+        //entriesFragment.onResume();
+
     }
 
     public void fileUpload() {
@@ -160,10 +179,26 @@ public class DashboardActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("id", driveServiceHelper.getId()).apply();
             databaseId = driveServiceHelper.getId();
-            Toast.makeText(DashboardActivity.this, "Uploading Success", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
+            dialog.setMessage("File upload successful...");
+            dialog.setPositiveButton("OK",
+                    (dialog1, which) -> {
+
+                    });
+            AlertDialog alertDialog = dialog.create();
+            alertDialog.setCancelable(false);
+            alertDialog.show();
         }).addOnFailureListener((Exception e) -> {
             progressDialog.dismiss();
-            Toast.makeText(DashboardActivity.this, "Error uploading file", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
+            dialog.setMessage("File upload failure...");
+            dialog.setPositiveButton("OK",
+                    (dialog1, which) -> {
+
+                    });
+            AlertDialog alertDialog = dialog.create();
+            alertDialog.setCancelable(false);
+            alertDialog.show();
         });
         onResume();
     }
