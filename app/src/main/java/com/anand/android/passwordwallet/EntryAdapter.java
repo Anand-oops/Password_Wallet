@@ -1,9 +1,9 @@
 package com.anand.android.passwordwallet;
 
-import android.app.ProgressDialog;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,22 +36,11 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
     public void onBindViewHolder(@NonNull EntryViewHolder holder, final int position) {
         holder.mTextView.setText(userEntries.get(position).getName());
         holder.itemView.setOnClickListener(view -> {
-            final ProgressDialog dialog = new ProgressDialog(context);
-            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setTitle("Decrypting...");
-            dialog.setMessage("Loading your data...");
-            dialog.setIndeterminate(true);
-            dialog.setIcon(android.R.drawable.ic_menu_edit);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                dialog.dismiss();
-                int id = userEntries.get(position).getId();
-                Intent intent = new Intent(context, EditEntry.class);
-                intent.putExtra("id", id);
-                context.startActivity(intent);
-            }, 800);
+            int id = userEntries.get(position).getId();
+            Intent intent = new Intent(context, EditEntry.class);
+            ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
+            intent.putExtra("id", id);
+            context.startActivity(intent, activityOptions.toBundle());
         });
     }
 

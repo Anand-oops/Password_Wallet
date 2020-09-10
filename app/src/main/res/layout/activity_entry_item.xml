@@ -17,7 +17,7 @@
         android:fontFamily="@font/rock_salt"
         android:text="Category Name"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="20sp" />
 
 </androidx.cardview.widget.CardView>

@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.Button;
@@ -26,6 +25,8 @@ import com.google.android.gms.common.api.Scope;
 import com.google.api.services.drive.DriveScopes;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class UserLoginActivity extends AppCompatActivity {
 
@@ -138,13 +139,15 @@ public class UserLoginActivity extends AppCompatActivity {
         dialog.setIcon(R.drawable.ic_login);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            dialog.dismiss();
-            Intent intent = new Intent(UserLoginActivity.this, DashboardActivity.class);
-            startActivity(intent);
-            finish();
-        }, 1000);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+                Intent intent = new Intent(UserLoginActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, 800);
     }
 
     private void Change() {

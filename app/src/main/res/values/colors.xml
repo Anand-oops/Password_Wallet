@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">@android:color/holo_red_dark</color>
     <color name="colorPrimaryDark">@android:color/holo_red_light</color>
-    <color name="colorAccent">#ff5722</color>
+    <color name="colorAccent">#b71c1c</color>
     <color name="colorUiLightRed">#e57373</color>
     <color name="colorItemLightOrange">#ff7043</color>
 </resources>

@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient2"
     android:orientation="vertical"
+    android:backgroundTint="@android:color/holo_purple"
+    android:backgroundTintMode="multiply"
     android:padding="20dp">
 
     <androidx.cardview.widget.CardView

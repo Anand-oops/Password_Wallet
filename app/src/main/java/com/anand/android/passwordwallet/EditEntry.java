@@ -2,12 +2,12 @@ package com.anand.android.passwordwallet;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EditEntry extends AppCompatActivity {
 
@@ -28,9 +31,14 @@ public class EditEntry extends AppCompatActivity {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_entry);
 
+        Explode explode = new Explode();
+        explode.setDuration(300);
+        getWindow().setEnterTransition(explode);
+        getWindow().setExitTransition(explode);
 
         cryptoHelper = new CryptoHelper();
         id = getIntent().getIntExtra("id", 0);
@@ -40,7 +48,7 @@ public class EditEntry extends AppCompatActivity {
         mPassword = findViewById(R.id.password);
         mNote = findViewById(R.id.note);
         if (id == 0) {
-            finish();
+            finishAfterTransition();
         } else {
             EntryHelper entryHelper = new EntryHelper(this);
             entry = entryHelper.getRow(id);
@@ -80,14 +88,13 @@ public class EditEntry extends AppCompatActivity {
                         dialog.setIcon(android.R.drawable.ic_menu_upload);
                         dialog.setCanceledOnTouchOutside(false);
                         dialog.show();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
+                        new Timer().schedule(new TimerTask() {
                             @Override
                             public void run() {
                                 dialog.dismiss();
-                                finish();
+                                finishAfterTransition();
                             }
-                        }, 1000);
+                        }, 500);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -99,33 +106,26 @@ public class EditEntry extends AppCompatActivity {
                 dialog.setTitle("Delete Confirmation !");
                 dialog.setIcon(R.drawable.ic_delete);
                 dialog.setPositiveButton("Delete",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                final ProgressDialog progressDialog = new ProgressDialog(context);
-                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                progressDialog.setTitle("Deleting...");
-                                progressDialog.setMessage("Deleting your entry");
-                                progressDialog.setIndeterminate(true);
-                                progressDialog.setIcon(android.R.drawable.ic_menu_delete);
-                                progressDialog.setCanceledOnTouchOutside(false);
-                                progressDialog.show();
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        entryHelper.deleteRow(entry);
-                                        progressDialog.dismiss();
-                                        finish();
-                                    }
-                                }, 1000);
-                            }
+                        (dialog1, which) -> {
+                            final ProgressDialog progressDialog = new ProgressDialog(context);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.setTitle("Deleting...");
+                            progressDialog.setMessage("Deleting your entry");
+                            progressDialog.setIndeterminate(true);
+                            progressDialog.setIcon(android.R.drawable.ic_menu_delete);
+                            progressDialog.setCanceledOnTouchOutside(false);
+                            progressDialog.show();
+                            new Timer().schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    entryHelper.deleteRow(entry);
+                                    progressDialog.dismiss();
+                                    finishAfterTransition();
+                                }
+                            }, 500);
                         });
                 dialog.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                            }
+                        (dialogInterface, i) -> {
                         });
                 AlertDialog alertDialog = dialog.create();
                 alertDialog.setCancelable(false);

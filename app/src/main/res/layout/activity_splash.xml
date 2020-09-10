@@ -6,7 +6,7 @@
     <com.flaviofaria.kenburnsview.KenBurnsView
         android:id="@+id/kbv"
         android:layout_width="match_parent"
-        android:scaleType="fitCenter"
+        android:scaleType="centerInside"
         android:layout_height="match_parent"
         android:src="@drawable/kbv" />
 </androidx.constraintlayout.widget.ConstraintLayout>

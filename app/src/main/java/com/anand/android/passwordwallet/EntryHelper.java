@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import static android.content.ContentValues.TAG;
 
 public class EntryHelper extends SQLiteOpenHelper {
@@ -46,13 +48,25 @@ public class EntryHelper extends SQLiteOpenHelper {
         contentValues.put(ENTRIES_NOTE, note);
         long ins = db.insert(TABLE_ENTRIES, null, contentValues);
         db.close();
+        Log.i(TAG, "insert: ADDED " + ins);
         return ins != -1;
     }
 
-    public Cursor ViewData() {
+    public ArrayList<EntryClass> ViewData() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * from " + TABLE_ENTRIES;
-        return db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<EntryClass> entryClassArrayList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                EntryClass entry = new EntryClass(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                        cursor.getString(3), cursor.getString(4));
+                entryClassArrayList.add(entry);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return entryClassArrayList;
     }
 
     public EntryClass getRow(int id) {
@@ -86,7 +100,7 @@ public class EntryHelper extends SQLiteOpenHelper {
 
     public void deleteDatabase() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("drop table if exists " + TABLE_ENTRIES);
+        db.execSQL("DELETE FROM " + TABLE_ENTRIES);
         Log.i(TAG, "deleteDatabase: DELETED");
         onCreate(db);
         db.close();

@@ -11,8 +11,14 @@
 
     <item
         android:id="@+id/del_data"
-        android:title="Delete Database"
+        android:title="Clear App Database"
         android:onClick="deleteDatabase"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_drive"
+        android:onClick="deleteDriveData"
+        android:title="Delete Drive Database"
         app:showAsAction="never" />
     <item
         android:id="@+id/how_to_use"

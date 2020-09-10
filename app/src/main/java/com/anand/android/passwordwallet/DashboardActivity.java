@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +25,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -105,13 +107,15 @@ public class DashboardActivity extends AppCompatActivity {
                                 progressDialog.setIcon(R.drawable.ic_logout);
                                 progressDialog.setCanceledOnTouchOutside(false);
                                 progressDialog.show();
-                                Handler handler = new Handler();
-                                handler.postDelayed(() -> {
-                                    progressDialog.dismiss();
-                                    Intent intent1 = new Intent(DashboardActivity.this, UserLoginActivity.class);
-                                    startActivity(intent1);
-                                    finish();
-                                }, 1000);
+                                new Timer().schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        progressDialog.dismiss();
+                                        Intent intent1 = new Intent(DashboardActivity.this, UserLoginActivity.class);
+                                        startActivity(intent1);
+                                        finish();
+                                    }
+                                }, 500);
                             });
                     dialog.setNegativeButton("Cancel",
                             (dialogInterface, i) -> {
@@ -136,11 +140,11 @@ public class DashboardActivity extends AppCompatActivity {
         progressDialog.show();
         driveServiceHelper.downloadFile(databaseId).addOnSuccessListener(aVoid -> {
             progressDialog.dismiss();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new EntriesFragment()).commit();
             AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
-            dialog.setMessage("Downloading Success...");
+            dialog.setMessage("File download successful...");
             dialog.setPositiveButton("OK",
                     (dialog1, which) -> {
-
                     });
             AlertDialog alertDialog = dialog.create();
             alertDialog.setCancelable(false);
@@ -149,7 +153,7 @@ public class DashboardActivity extends AppCompatActivity {
             progressDialog.dismiss();
             e.printStackTrace();
             AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
-            dialog.setMessage("Downloading Failed...");
+            dialog.setMessage("File not found...");
             dialog.setPositiveButton("OK",
                     (dialog1, which) -> {
 
@@ -158,8 +162,6 @@ public class DashboardActivity extends AppCompatActivity {
             alertDialog.setCancelable(false);
             alertDialog.show();
         });
-        //EntriesFragment entriesFragment = new EntriesFragment();
-        //entriesFragment.onResume();
 
     }
 
@@ -205,7 +207,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void deletePrevious() {
         driveServiceHelper.deletePreviousFile(databaseId)
-                .addOnFailureListener(e -> Log.i(TAG, "onFailure on Deleting File Exception : " + e.getMessage()));
+                .addOnFailureListener(e -> Log.i(TAG, "deletePrevious: deleted database id " + databaseId));
     }
 
     @Override
@@ -232,13 +234,15 @@ public class DashboardActivity extends AppCompatActivity {
                         progressDialog.setIcon(R.drawable.ic_logout);
                         progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.show();
-                        Handler handler = new Handler();
-                        handler.postDelayed(() -> {
-                            progressDialog.dismiss();
-                            Intent intent = new Intent(DashboardActivity.this, UserLoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }, 1000);
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                progressDialog.dismiss();
+                                Intent intent = new Intent(DashboardActivity.this, UserLoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }, 500);
                     });
             dialog.setNegativeButton("Cancel",
                     (dialogInterface, i) -> {
@@ -264,13 +268,14 @@ public class DashboardActivity extends AppCompatActivity {
                     progressDialog.setIcon(R.drawable.ic_delete);
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
-                    Handler handler = new Handler();
-                    handler.postDelayed(() -> {
-                        progressDialog.dismiss();
-                        entryHelper.deleteDatabase();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new EntriesFragment()).commit();
-
-                    }, 1000);
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                            entryHelper.deleteDatabase();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new EntriesFragment()).commit();
+                        }
+                    }, 500);
                 });
         dialog1.setNegativeButton("Cancel",
                 (dialogInterface, i) -> {
@@ -278,6 +283,7 @@ public class DashboardActivity extends AppCompatActivity {
         AlertDialog alertdialog = dialog1.create();
         alertdialog.setCancelable(false);
         alertdialog.show();
+        entryHelper.close();
     }
 
     @Override
@@ -285,5 +291,57 @@ public class DashboardActivity extends AppCompatActivity {
         super.onResume();
         databaseId = sharedPreferences.getString("id", "fakeId");
         Log.i(TAG, "onCreate: databaseId " + databaseId);
+    }
+
+    public void deleteDriveData(MenuItem item) {
+        AlertDialog.Builder dialog1 = new AlertDialog.Builder(DashboardActivity.this);
+        dialog1.setMessage("Drive Database will be deleted.\nDo you want to continue? ");
+        dialog1.setTitle("Caution !");
+        dialog1.setIcon(R.drawable.ic_delete);
+        dialog1.setPositiveButton("Delete",
+                (dialog2, which) -> {
+                    final ProgressDialog progressDialog = new ProgressDialog(DashboardActivity.this);
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setTitle("Deleting Database");
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setIcon(R.drawable.ic_delete);
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                            driveServiceHelper.deletePreviousFile(databaseId)
+                                    .addOnSuccessListener(aVoid -> {
+                                        AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
+                                        dialog.setIcon(android.R.drawable.stat_notify_error);
+                                        dialog.setMessage("Drive Database deleted...");
+                                        dialog.setPositiveButton("OK",
+                                                (dialog11, which1) -> {
+                                                });
+                                        AlertDialog alertDialog = dialog.create();
+                                        alertDialog.setCancelable(false);
+                                        alertDialog.show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        AlertDialog.Builder dialog = new AlertDialog.Builder(DashboardActivity.this);
+                                        dialog.setIcon(android.R.drawable.stat_notify_error);
+                                        dialog.setMessage("No file found...");
+                                        dialog.setPositiveButton("OK",
+                                                (dialog1, which) -> {
+                                                });
+                                        AlertDialog alertDialog = dialog.create();
+                                        alertDialog.setCancelable(false);
+                                        alertDialog.show();
+                                    });
+                        }
+                    }, 500);
+                });
+        dialog1.setNegativeButton("Cancel",
+                (dialogInterface, i) -> {
+                });
+        AlertDialog alertdialog = dialog1.create();
+        alertdialog.setCancelable(false);
+        alertdialog.show();
     }
 }

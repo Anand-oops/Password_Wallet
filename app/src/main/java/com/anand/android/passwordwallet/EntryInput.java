@@ -3,7 +3,6 @@ package com.anand.android.passwordwallet;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,8 +13,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class EntryInput extends AppCompatActivity {
-    private static final String TAG = "EntryInput";
     EntryHelper entryHelper = new EntryHelper(this);
     CryptoHelper cryptoHelper = new CryptoHelper();
 
@@ -69,14 +70,13 @@ public class EntryInput extends AppCompatActivity {
                 dialog.setIcon(android.R.drawable.ic_menu_save);
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
                         dialog.dismiss();
                         finish();
                     }
-                }, 1000);
+                }, 500);
             }
         }
     }

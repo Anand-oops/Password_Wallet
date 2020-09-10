@@ -1,78 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient2"
+    android:backgroundTint="@android:color/holo_purple"
+    android:backgroundTintMode="multiply"
     android:orientation="vertical"
     android:padding="20dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:elevation="10dp"
-        app:cardCornerRadius="50dp">
+        android:layout_marginTop="20dp">
 
-        <EditText
-            android:id="@+id/name"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:elevation="50dp"
+            android:src="@drawable/ic_entry" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:fontFamily="@font/marko_one"
-            android:hint="ENTRY NAME"
-            android:text="" />
-    </androidx.cardview.widget.CardView>
+            android:layout_gravity="center"
+            android:elevation="50dp"
+            app:cardCornerRadius="50dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:fontFamily="@font/marko_one"
+                android:hint="ENTRY NAME"
+                android:inputType="textCapWords"
+                android:text="" />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:elevation="10dp"
-        app:cardCornerRadius="50dp">
+        android:layout_marginTop="20dp">
 
-        <EditText
-            android:id="@+id/userid"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:elevation="50dp"
+            android:src="@drawable/ic_login"
+            app:tint="@android:color/white" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/marko_one"
-            android:layout_margin="20dp"
-            android:hint="USER ID" />
-    </androidx.cardview.widget.CardView>
+            android:layout_gravity="center"
+            android:elevation="50dp"
+            app:cardCornerRadius="50dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
+            <EditText
+                android:id="@+id/userid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:fontFamily="@font/marko_one"
+                android:hint="USER ID"
+                android:inputType="text" />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:elevation="10dp"
-        app:cardCornerRadius="50dp">
+        android:layout_marginTop="20dp">
 
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:elevation="50dp"
+            android:src="@drawable/ic_password" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/marko_one"
-            android:layout_margin="20dp"
-            android:hint="PASSWORD" />
-    </androidx.cardview.widget.CardView>
+            android:layout_gravity="center"
+            android:elevation="10dp"
+            app:cardCornerRadius="50dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:fontFamily="@font/marko_one"
+                android:hint="PASSWORD"
+                android:inputType="text"
+                tools:ignore="TextFields" />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:elevation="10dp"
-        app:cardCornerRadius="50dp">
+        android:layout_marginTop="20dp">
 
-        <EditText
-            android:id="@+id/note"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:elevation="50dp"
+            android:src="@drawable/ic_note" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/marko_one"
-            android:layout_margin="20dp"
-            android:hint="NOTE" />
-    </androidx.cardview.widget.CardView>
+            android:layout_gravity="center"
+            android:elevation="10dp"
+            app:cardCornerRadius="50dp">
+
+            <EditText
+                android:id="@+id/note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:fontFamily="@font/marko_one"
+                android:hint="NOTE"
+                android:inputType="textCapWords" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
 </LinearLayout>

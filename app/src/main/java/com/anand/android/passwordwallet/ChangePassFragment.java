@@ -1,7 +1,6 @@
 package com.anand.android.passwordwallet;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,79 +47,62 @@ public class ChangePassFragment extends Fragment {
         final EditText NewPass = requireActivity().findViewById(R.id.newPassword);
         final EditText ConfirmPass = requireActivity().findViewById(R.id.confirmPassword);
 
-        changePass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!dbHelper.checked(userEmail, CurrentPass.getText().toString().trim())) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(requireActivity());
-                    dialog.setMessage("Wrong Password...");
-                    dialog.setTitle("Error ");
-                    dialog.setIcon(android.R.drawable.ic_dialog_alert);
-                    dialog.setPositiveButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    CurrentPass.setText("");
-                                    NewPass.setText("");
-                                    ConfirmPass.setText("");
-                                }
-                            });
-                    AlertDialog alertDialog = dialog.create();
-                    alertDialog.setCancelable(false);
-                    alertDialog.show();
-                } else if (!NewPass.getText().toString().trim().equals(ConfirmPass.getText().toString().trim())) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(requireActivity());
-                    dialog.setMessage("Passwords do not match...");
-                    dialog.setTitle("Confirmation Error");
+        changePass.setOnClickListener(view1 -> {
+            if (!dbHelper.checked(userEmail, CurrentPass.getText().toString().trim())) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(requireActivity());
+                dialog.setMessage("Wrong Password...");
+                dialog.setTitle("Error ");
+                dialog.setIcon(android.R.drawable.ic_dialog_alert);
+                dialog.setPositiveButton("OK",
+                        (dialog1, which) -> {
+                            CurrentPass.setText("");
+                            NewPass.setText("");
+                            ConfirmPass.setText("");
+                        });
+                AlertDialog alertDialog = dialog.create();
+                alertDialog.setCancelable(false);
+                alertDialog.show();
+            } else if (!NewPass.getText().toString().trim().equals(ConfirmPass.getText().toString().trim())) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(requireActivity());
+                dialog.setMessage("Passwords do not match...");
+                dialog.setTitle("Confirmation Error");
+                dialog.setIcon(R.drawable.ic_block);
+                dialog.setPositiveButton("RETRY",
+                        (dialog12, which) -> {
+                            CurrentPass.setText("");
+                            NewPass.setText("");
+                            ConfirmPass.setText("");
+                        });
+                AlertDialog alertDialog = dialog.create();
+                alertDialog.setCancelable(false);
+                alertDialog.show();
+            } else {
+                if (NewPass.getText().toString().trim().isEmpty() || NewPass.getText().toString().trim().length() < 6) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(requireContext());
+                    dialog.setMessage("6 minimum characters required in password...");
+                    dialog.setTitle("Credentials Error");
                     dialog.setIcon(R.drawable.ic_block);
                     dialog.setPositiveButton("RETRY",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    CurrentPass.setText("");
-                                    NewPass.setText("");
-                                    ConfirmPass.setText("");
-                                }
+                            (dialog13, which) -> {
+                                CurrentPass.setText("");
+                                NewPass.setText("");
+                                ConfirmPass.setText("");
                             });
                     AlertDialog alertDialog = dialog.create();
                     alertDialog.setCancelable(false);
                     alertDialog.show();
                 } else {
-                    if (NewPass.getText().toString().trim().isEmpty() || NewPass.getText().toString().trim().length() < 6) {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(requireContext());
-                        dialog.setMessage("6 minimum characters required in password...");
-                        dialog.setTitle("Credentials Error");
-                        dialog.setIcon(R.drawable.ic_block);
-                        dialog.setPositiveButton("RETRY",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        CurrentPass.setText("");
-                                        NewPass.setText("");
-                                        ConfirmPass.setText("");
-                                    }
-                                });
+                    boolean update = dbHelper.update(userEmail, NewPass.getText().toString().trim());
+                    if (update) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(requireActivity());
+                        dialog.setMessage("Login with your latest password... ");
+                        dialog.setTitle("Redirecting to Login Page");
+                        dialog.setIcon(R.drawable.ic_logout);
+                        dialog.setPositiveButton("EXIT",
+                                (dialog14, which) -> requireActivity().finish());
                         AlertDialog alertDialog = dialog.create();
                         alertDialog.setCancelable(false);
                         alertDialog.show();
-                    } else {
-                        boolean update = dbHelper.update(userEmail, NewPass.getText().toString().trim());
-                        if (update) {
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(requireActivity());
-                            dialog.setMessage("Login with your latest password... ");
-                            dialog.setTitle("Redirecting to Login Page");
-                            dialog.setIcon(R.drawable.ic_logout);
-                            dialog.setPositiveButton("EXIT",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog,
-                                                            int which) {
-                                            getActivity().finish();
-                                        }
-                                    });
-                            AlertDialog alertDialog = dialog.create();
-                            alertDialog.setCancelable(false);
-                            alertDialog.show();
-                        }
                     }
                 }
             }

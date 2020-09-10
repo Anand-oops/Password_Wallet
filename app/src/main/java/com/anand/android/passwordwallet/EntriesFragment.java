@@ -1,7 +1,6 @@
 package com.anand.android.passwordwallet;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +30,9 @@ public class EntriesFragment extends Fragment {
     ArrayList<EntryClass> list;
     EntryAdapter adapter;
     RecyclerView userEntries;
+
+    public EntriesFragment() {
+    }
 
     @Nullable
     @Override
@@ -84,24 +86,15 @@ public class EntriesFragment extends Fragment {
 
     public void viewData() {
         EntryHelper entryHelper = new EntryHelper(getActivity());
-        Cursor cursor = entryHelper.ViewData();
         list.clear();
-        if (cursor.getCount() == 0) {
+        list = entryHelper.ViewData();
+        if (list.size() == 0) {
             TextView tv = requireActivity().findViewById(R.id.NoDataTV);
             tv.setVisibility(View.VISIBLE);
         } else {
             TextView tv = requireActivity().findViewById(R.id.NoDataTV);
             if (tv.getVisibility() == View.VISIBLE)
                 tv.setVisibility(View.GONE);
-            if (cursor.moveToFirst()) {
-                do {
-                    EntryClass entry = new EntryClass(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                            cursor.getString(3), cursor.getString(4));
-                    list.add(entry);
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
-            entryHelper.close();
             adapter = new EntryAdapter(getActivity(), list);
             userEntries.setHasFixedSize(true);
             userEntries.setAdapter(adapter);
