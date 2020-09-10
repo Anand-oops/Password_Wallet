@@ -130,7 +130,6 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
-
     private void fileDownload() {
         ProgressDialog progressDialog = new ProgressDialog(DashboardActivity.this);
         progressDialog.setTitle("Downloading from Google Drive");
