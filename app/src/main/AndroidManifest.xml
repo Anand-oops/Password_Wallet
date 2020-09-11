@@ -39,10 +39,14 @@
 
         <activity
             android:name=".EntryInput"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Transparent"
             android:label="Enter Credentials" />
+
         <activity
             android:name=".EditEntry"
-            android:label="Edit Credentials" />
+            android:label="Edit Credentials"
+            android:launchMode="singleTask" />
 
         <meta-data
             android:name="preloaded_fonts"

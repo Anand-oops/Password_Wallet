@@ -288,7 +288,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        databaseId = sharedPreferences.getString("id", "fakeId");
+        databaseId = sharedPreferences.getString("id", driveServiceHelper.getDriveRestoreId());
         Log.i(TAG, "onCreate: databaseId " + databaseId);
     }
 

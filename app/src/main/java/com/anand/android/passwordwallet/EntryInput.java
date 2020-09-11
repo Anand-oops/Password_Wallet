@@ -1,13 +1,19 @@
 package com.anand.android.passwordwallet;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -19,11 +25,48 @@ import java.util.TimerTask;
 public class EntryInput extends AppCompatActivity {
     EntryHelper entryHelper = new EntryHelper(this);
     CryptoHelper cryptoHelper = new CryptoHelper();
+    LinearLayout rootLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_entry);
+
+        rootLayout = findViewById(R.id.root_view);
+        if (savedInstanceState == null) {
+            rootLayout.setVisibility(View.INVISIBLE);
+
+            ViewTreeObserver viewTreeObserver = rootLayout.getViewTreeObserver();
+            if (viewTreeObserver.isAlive()) {
+                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        circularRevealActivity();
+                        rootLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
+            }
+        }
+    }
+
+    private void circularRevealActivity() {
+
+        int cx = rootLayout.getRight() - getDips();
+        int cy = rootLayout.getBottom() - getDips();
+
+        float finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
+
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, cx, cy, 0, finalRadius);
+        circularReveal.setDuration(800);
+
+        rootLayout.setVisibility(View.VISIBLE);
+        circularReveal.start();
+    }
+
+    private int getDips() {
+        Resources resources = getResources();
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 68, resources.getDisplayMetrics());
     }
 
     @Override
@@ -79,5 +122,38 @@ public class EntryInput extends AppCompatActivity {
                 }, 500);
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        int cx = rootLayout.getRight() - getDips();
+        int cy = rootLayout.getBottom() - getDips();
+        float finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, cx, cy, finalRadius, 0);
+
+        circularReveal.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                rootLayout.setVisibility(View.INVISIBLE);
+                finish();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        circularReveal.setDuration(800);
+        circularReveal.start();
     }
 }

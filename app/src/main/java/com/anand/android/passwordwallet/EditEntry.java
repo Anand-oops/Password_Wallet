@@ -92,7 +92,7 @@ public class EditEntry extends AppCompatActivity {
                             @Override
                             public void run() {
                                 dialog.dismiss();
-                                finishAfterTransition();
+                                finish();
                             }
                         }, 500);
                     }
@@ -120,7 +120,7 @@ public class EditEntry extends AppCompatActivity {
                                 public void run() {
                                     entryHelper.deleteRow(entry);
                                     progressDialog.dismiss();
-                                    finishAfterTransition();
+                                    finish();
                                 }
                             }, 500);
                         });

@@ -36,9 +36,9 @@
         app:headerLayout="@layout/nav_header"
         android:backgroundTint="@android:color/holo_purple"
         android:backgroundTintMode="multiply"
+        app:itemIconTint="@color/drawer_item"
+        app:itemTextColor="@color/drawer_item"
         android:background="@drawable/gradient1"
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"
         app:menu="@menu/drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

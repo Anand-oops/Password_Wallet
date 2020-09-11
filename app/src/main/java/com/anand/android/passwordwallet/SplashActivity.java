@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
 
         KenBurnsView kenBurnsView = findViewById(R.id.kbv);
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-        RandomTransitionGenerator generator = new RandomTransitionGenerator(2000, interpolator);
+        RandomTransitionGenerator generator = new RandomTransitionGenerator(850, interpolator);
         kenBurnsView.setTransitionGenerator(generator);
 
         new Timer().schedule(new TimerTask() {
@@ -33,7 +33,7 @@ public class SplashActivity extends AppCompatActivity {
                 kenBurnsView.pause();
                 finish();
             }
-        }, 2000);
+        }, 2500);
     }
 
 }

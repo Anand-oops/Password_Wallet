@@ -1,13 +1,15 @@
 package com.anand.android.passwordwallet;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -32,12 +34,15 @@ public class GoogleSignInActivity extends AppCompatActivity {
     RelativeLayout choiceLayout;
     private GoogleSignInClient mGoogleSignInClient;
     private static final int SIGN_IN = 1;
+    public static final String MY_PREFERENCES = "MyPrefs";
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_sign_in);
 
+        sharedPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
@@ -107,7 +112,42 @@ public class GoogleSignInActivity extends AppCompatActivity {
     }
 
     private void restoreFromDrive() {
-        Toast.makeText(this, "Select file", Toast.LENGTH_SHORT).show();
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Restoring from Drive");
+        progressDialog.setIcon(R.drawable.ic_sync);
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+        DriveServiceHelper driveServiceHelper = new DriveServiceHelper(this);
+        driveServiceHelper.restoreFromDrive()
+                .addOnSuccessListener(aVoid -> {
+                    String driveRestoreId = driveServiceHelper.getDriveRestoreId();
+                    driveServiceHelper.downloadFile(driveRestoreId).addOnSuccessListener((Void bVoid) -> {
+                        progressDialog.dismiss();
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(GoogleSignInActivity.this);
+                        dialog.setMessage("File restore successful...");
+                        dialog.setPositiveButton("OK",
+                                (dialog1, which) -> {
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("id", driveRestoreId).apply();
+                                    startActivity(new Intent(GoogleSignInActivity.this, UserLoginActivity.class));
+                                });
+                        AlertDialog alertDialog = dialog.create();
+                        alertDialog.setCancelable(false);
+                        alertDialog.show();
+                    }).addOnFailureListener(e -> {
+                        progressDialog.dismiss();
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(GoogleSignInActivity.this);
+                        dialog.setMessage("Restore point not found...");
+                        dialog.setPositiveButton("OK",
+                                (dialog1, which) -> {
+                                });
+                        AlertDialog alertDialog = dialog.create();
+                        alertDialog.setCancelable(false);
+                        alertDialog.show();
+                    });
+                });
     }
 
 

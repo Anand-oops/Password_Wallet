@@ -8,6 +8,7 @@
     android:backgroundTint="@android:color/holo_purple"
     android:backgroundTintMode="multiply"
     android:orientation="vertical"
+    android:id="@+id/root_view"
     android:padding="20dp">
 
     <LinearLayout

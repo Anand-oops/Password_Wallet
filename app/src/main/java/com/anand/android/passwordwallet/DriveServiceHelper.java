@@ -15,6 +15,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,9 +31,14 @@ public class DriveServiceHelper {
     Activity activity;
     private Drive mDriveService;
     private String id;
+    private String driveRestoreId;
 
     public String getId() {
         return id;
+    }
+
+    public String getDriveRestoreId() {
+        return driveRestoreId;
     }
 
     public DriveServiceHelper(Activity activity) {
@@ -105,24 +111,55 @@ public class DriveServiceHelper {
 
 
     public Task<Void> deletePreviousFile(final String fileId) {
-        return Tasks.call(mExecutor, () -> {
-            Log.i(TAG, "deletePreviousFile: delete file " + fileId);
-            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
-            GoogleAccountCredential credential = GoogleAccountCredential.
-                    usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_FILE));
+        return Tasks.call(mExecutor,
+                () -> {
+                    Log.i(TAG, "deletePreviousFile: delete file " + fileId);
+                    GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
+                    GoogleAccountCredential credential = GoogleAccountCredential.
+                            usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_FILE));
 
-            assert acct != null;
-            credential.setSelectedAccount(acct.getAccount());
+                    assert acct != null;
+                    credential.setSelectedAccount(acct.getAccount());
 
-            mDriveService = new Drive.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(),
-                    credential).setApplicationName(activity.getPackageName()).build();
+                    mDriveService = new Drive.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(),
+                            credential).setApplicationName(activity.getPackageName()).build();
 
-            if (fileId != null) {
-                mDriveService.files().delete(fileId).execute();
-            }
-            return null;
-        });
+                    if (fileId != null) {
+                        mDriveService.files().delete(fileId).execute();
+                    }
+                    return null;
+                });
     }
 
+    public Task<String> restoreFromDrive() {
+        return Tasks.call(mExecutor,
+                () -> {
+                    GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
+                    GoogleAccountCredential credential = GoogleAccountCredential.
+                            usingOAuth2(activity, Collections.singleton(DriveScopes.DRIVE_FILE));
+
+                    assert acct != null;
+                    credential.setSelectedAccount(acct.getAccount());
+
+                    mDriveService = new Drive.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(),
+                            credential).setApplicationName(activity.getPackageName()).build();
+
+                    String pageToken = null;
+                    do {
+                        FileList result = mDriveService.files().list()
+                                .setQ("name='SyncToDrive.db' and mimeType='application/vnd.sqlite3'")
+                                .setSpaces("drive")
+                                .setFields("nextPageToken, files(id, name)")
+                                .setPageToken(pageToken)
+                                .execute();
+                        for (File file : result.getFiles()) {
+                            driveRestoreId = file.getId();
+                            return file.getId();
+                        }
+                        pageToken = result.getNextPageToken();
+                    } while (pageToken != null);
+                    return null;
+                });
+    }
 
 }
