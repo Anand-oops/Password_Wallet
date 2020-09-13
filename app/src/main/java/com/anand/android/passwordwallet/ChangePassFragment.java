@@ -1,6 +1,7 @@
 package com.anand.android.passwordwallet;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -99,7 +100,11 @@ public class ChangePassFragment extends Fragment {
                         dialog.setTitle("Redirecting to Login Page");
                         dialog.setIcon(R.drawable.ic_logout);
                         dialog.setPositiveButton("EXIT",
-                                (dialog14, which) -> requireActivity().finish());
+                                (dialog14, which) -> {
+                                    Intent intent = new Intent(requireContext(), UserLoginActivity.class);
+                                    startActivity(intent);
+                                    requireActivity().finish();
+                                });
                         AlertDialog alertDialog = dialog.create();
                         alertDialog.setCancelable(false);
                         alertDialog.show();
